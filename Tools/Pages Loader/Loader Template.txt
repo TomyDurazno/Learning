@@ -1,0 +1,89 @@
+<h1>Permitir Ventanas emergentes<h1>
+<script>
+function taskerBuilder()
+{
+	var func;
+
+	var config = {};
+
+	var counter = 0;
+	
+	var shouldStop = false;
+	
+	_defaultConfig = function(){
+		return {
+			interval : 1250,
+			times: 5,
+		};
+	}
+
+	_run = function()
+	{
+		if(config.times > counter && !shouldStop)
+		{
+			setTimeout(function(){
+				func();
+				_run();
+			}, config.interval);
+			counter++;
+		}			
+	}
+	
+	var obj = 
+	{
+		run: function(fun, conf)
+		{				
+			if(!fun)
+			{
+				throw new Error("Need a function!");
+			}	
+			
+			func = fun;	
+
+			shouldStop = false;
+			
+			counter = 0;
+			
+			if(conf)
+			{
+				Object.assign(config, conf);
+			}
+			else
+			{
+				config = _defaultConfig();
+			}
+
+			_run();
+		},
+		stop: function()
+		{
+			shouldStop = true;
+		},
+		config: function()
+		{
+			return config;
+		}
+	}
+	
+	return obj;
+};
+
+tasker = taskerBuilder();
+
+var urls = [
+	**REPLACE**
+];
+
+var pos = 0;
+var conf = { interval : 50, times: urls.length };
+
+tasker.run(() => { 
+	window.open(urls[pos]); 
+	pos++;
+	
+	if((pos + 1) == urls.length)
+	{
+		window.close();
+	}
+}, conf);
+</script>
